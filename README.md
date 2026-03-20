@@ -2,11 +2,13 @@ Real-life Oracle SQL performance tuning case study on large datasets
 ## Oracle PL/SQL Performance Optimization – High Volume Order Processing
 
 ### Business Context
-A financial trading system was receiving approximately **17 million order book records** from an external stock exchange feed.  
-These records needed to be processed, sorted, and assigned sequential order numbers before downstream reporting and reconciliation.
+### Processing Flow (Before Optimization)
 
-The existing PL/SQL batch procedure was taking **around 1 hour to complete**, causing delays in reporting windows and increasing system load during peak hours.
+External Feed → Staging Table → Cursor Loop Processing → Sequential Sorting → Order Number Assignment → Reporting Tables
 
+### Processing Flow (After Optimization)
+
+External Feed → Staging Table → Set-Based Analytic Processing (RANK) → Asynchronous Trigger Handling → Fast Order Assignment → Reporting Tables
 ### Performance Bottleneck Analysis
 Detailed analysis revealed that:
 
