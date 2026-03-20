@@ -1,42 +1,37 @@
-# oracle-sql-performance-optimization-case-study
 Real-life Oracle SQL performance tuning case study on large datasets
-# Oracle SQL Performance Optimization Case Study
+## Oracle PL/SQL Performance Optimization – High Volume Order Processing
 
-## Problem
+### Business Context
+A financial trading system was receiving approximately **17 million order book records** from an external stock exchange feed.  
+These records needed to be processed, sorted, and assigned sequential order numbers before downstream reporting and reconciliation.
 
-A complex Oracle SQL query processing a large transactional dataset was taking more than 15 minutes to complete.  
-The query involved multiple joins, high I/O operations, and inefficient filtering conditions.
+The existing PL/SQL batch procedure was taking **around 1 hour to complete**, causing delays in reporting windows and increasing system load during peak hours.
 
-## Environment
+### Performance Bottleneck Analysis
+Detailed analysis revealed that:
 
-- Oracle Database (Enterprise scale)
-- Dataset size: tens of millions of records
-- Batch processing workload
+- Nearly **30 minutes were spent reading records through a cursor loop**
+- Repeated function calls inside the procedure caused unnecessary context switching
+- Inefficient ordering logic increased sorting overhead
+- Synchronous table triggers were adding additional processing latency
+- Redundant reads were executed due to procedural design limitations
 
-## Analysis Approach
+### Optimization Strategy
+To resolve the performance issues, the following improvements were implemented:
 
-- Execution plan analysis
-- Identification of full table scans and expensive nested loops
-- Review of indexing strategy
-- SQL rewrite for better filtering and join selectivity
+- Replaced cursor-based sequential processing with **analytic functions (RANK / window functions)** for bulk ordering logic
+- Moved repeated procedural function calls directly into the cursor query to reduce context switching
+- Eliminated redundant reads and unnecessary data fetch operations
+- Refactored procedural flow to improve set-based processing efficiency
+- Converted table trigger execution to **asynchronous processing** to reduce transaction wait time
+- Improved SQL execution plan stability and reduced sorting overhead
 
-## Optimization Steps
+### Results
+- Batch processing time reduced from **~60 minutes to ~5 minutes**
+- Cursor read phase reduced from **~30 minutes to a few seconds**
+- Significant reduction in I/O operations and CPU utilization
+- Improved batch window reliability and downstream system readiness
+- Increased scalability for future growth in order volume
 
-- Implemented composite indexing strategy
-- Rewrote query joins and filtering logic
-- Reduced unnecessary data processing
-- Improved batch execution flow
-
-## Result
-
-Execution time reduced from ~15 minutes to under 2 minutes.
-
-This significantly improved system throughput and batch processing stability.
-
-## Key Skills Demonstrated
-
-- Oracle Performance Tuning
-- SQL Optimization
-- Execution Plan Analysis
-- Index Strategy Design
-- Large Dataset Processing
+### Key Technologies
+Oracle Database, PL/SQL, Analytic Functions (RANK), Batch Optimization, High-Volume Data Processing, Trigger Optimization
